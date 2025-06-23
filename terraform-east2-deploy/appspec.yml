@@ -1,0 +1,17 @@
+version: 0.0
+os: linux
+files:
+  - source: k8s/
+    destination: /tmp/k8s/
+
+hooks:
+  AfterInstall:
+    - location: /
+      runas: root
+      timeout: 300
+      commands:
+        - kubectl apply -f /tmp/k8s/db-secret.yaml
+        - kubectl apply -f /tmp/k8s/backend-deployment.yaml
+        - kubectl apply -f /tmp/k8s/frontend-deployment.yaml
+        - kubectl rollout restart deployment backend-deployment
+        - kubectl rollout restart deployment frontend-deployment
